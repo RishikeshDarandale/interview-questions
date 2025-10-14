@@ -129,3 +129,44 @@ async function fetchData() {
 - **Resource Management:** Reduces unnecessary processing and network requests, leading to more efficient use of system resources.
 
 </details>
+<details>
+  <summary>What is polyfill in javascript?</summary>
+  A polyfill in JavaScript is a piece of code that provides modern functionality to older browsers or environments that do not natively support it. Essentially,     it "fills in" the gaps in browser compatibility by implementing a missing feature using existing JavaScript capabilities.
+
+  **Here's how it works:**
+  - **Detection:** A polyfill first checks if a specific feature or API is available in the current browser environment.
+  - **Implementation:** If the feature is missing, the polyfill provides a custom implementation of that feature, mimicking its behavior as closely as possible using the JavaScript features that are supported in that older environment.
+
+  **Why are polyfills necessary?**
+  Different web browsers and their versions have varying levels of support for JavaScript features and APIs. Newer features introduced in ECMAScript standards (like ES6, ES7, etc.) might not be natively supported in older browsers (e.g., Internet Explorer 11). Polyfills allow developers to use these modern features in their code while ensuring that the application still functions correctly in older environments, thus improving cross-browser compatibility and reducing development time.
+
+  Consider the `Array.prototype.includes()` method, which was added in ECMAScript 2016. Older browsers like Internet Explorer 11 do not support it. A polyfill for `Array.prototype.includes()` would check if the method exists and, if not, provide a custom implementation using a loop and `indexOf()` to achieve the same functionality.
+
+  ```Javascript
+  if (!Array.prototype.includes) {
+    Array.prototype.includes = function(searchElement, fromIndex) {
+      if (this == null) {
+        throw new TypeError('"this" is null or not defined');
+      }
+  
+      var o = Object(this);
+      var len = o.length >>> 0;
+  
+      if (len === 0) {
+        return false;
+      }
+  
+      var n = fromIndex | 0;
+      var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+  
+      while (k < len) {
+        if (o[k] === searchElement) {
+          return true;
+        }
+        k++;
+      }
+      return false;
+    };
+  }
+  ```
+</details>
