@@ -1,0 +1,85 @@
+# Questions
+
+<details>
+  <summary>Why javascript is single threaded?</summary>
+   JavaScript is designed as a single-threaded language primarily for simplicity and to avoid the complexities associated with multithreading in a browser environment.
+
+Here are the key reasons:
+
+- **Original Purpose and Simplicity**: When JavaScript was initially created, its primary role was to add interactivity to web pages within a single browser window. For this purpose, a single-threaded model was sufficient and significantly simpler to implement and reason about compared to managing multiple threads, synchronization, and potential race conditions.
+- **Avoiding Concurrency Issues**: Multithreaded environments introduce challenges like race conditions and deadlocks when multiple threads try to access and modify shared resources simultaneously. By being single-threaded, JavaScript inherently avoids these complex concurrency issues, making it easier for developers to write predictable code without needing to implement explicit locking mechanisms or complex synchronization patterns for most operations.
+- **The Event Loop and Asynchronous Operations**: While JavaScript is single-threaded, it achieves non-blocking I/O and the appearance of concurrency through the Event Loop. The JavaScript engine (like V8 in Chrome) offloads time-consuming tasks (like network requests, timers, or DOM manipulations) to Web APIs (in browsers) or the Node.js C++ API. When these asynchronous tasks complete, their callbacks are placed in a queue, and the Event Loop pushes them onto the call stack for execution only when the main thread is idle. This allows the single thread to remain responsive and handle other tasks while waiting for long-running operations to finish.
+- **Browser Environment Constraints**: In a browser, directly manipulating the Document Object Model (DOM) from multiple threads simultaneously could lead to inconsistencies and complex synchronization problems. A single-threaded model simplifies DOM manipulation and ensures a consistent state.
+
+While JavaScript is single-threaded in its core execution model, modern JavaScript environments (like browsers and Node.js) offer mechanisms like Web Workers (in browsers) or Worker Threads (in Node.js) to enable true parallel execution for computationally intensive tasks by creating separate, isolated execution environments, thereby overcoming the limitations of the single-threaded nature for specific use cases.
+
+</details>
+
+<details>
+  <summary>How single-threaded JavaScript handles multiple tasks?</summary>
+  Despite its single-threaded nature, JavaScript is not inefficient. It achieves high-performance concurrency for non-blocking tasks, like fetching data from an API or responding to a user click, through a sophisticated system that includes the event loop, callback queues, and Web APIs.
+  
+  Here is a step-by-step breakdown of how this process works:
+  - **The Call Stack**: All synchronous code is executed here, one function at a time in a Last-In, First-Out (LIFO) order. When a function finishes, it is "popped" off the stack.
+  - **Offloading to Web APIs**: When the JavaScript engine encounters an asynchronous operation—such as setTimeout(), fetch(), or a DOM event listener—it does not wait for it to complete. Instead, it offloads the operation to a Web API (or C++ API in Node.js) to run in the background.
+  - **The Callback Queue**: Once the Web API finishes its task, it places the callback function (the code to be run next) into a queue. There are separate queues for different types of tasks, including higher-priority "microtasks" (like Promises) and lower-priority "macrotasks" (like timers).
+  - **The Event Loop**: This constantly-running process checks if the call stack is empty. If it is, the event loop takes the first item from the queue and pushes it onto the call stack for execution. 
+  
+  This mechanism ensures that computationally intensive background tasks do not block the main thread, keeping the application responsive.
+  
+  e.g.
+  ```javascript
+  console.log("Start");
+
+setTimeout(() => {
+console.log("This is asynchronous.");
+}, 2000);
+
+console.log("End");
+
+```
+**Output:**
+```
+
+Start
+End
+This is asynchronous.
+
+````
+
+**In this example:**
+
+- The first console.log("Start") is executed and removed from the stack.
+- The setTimeout() function is encountered and placed in the call stack. It sets the callback function to await in the Web API (which handles the asynchronous operation), then the setTimeout() function is popped off the stack.
+- The third console.log("End") is pushed onto the stack and executed, and then it's popped off.
+- After 2 seconds, the callback function passed to setTimeout() is moved to the Callback Queue (or Event Queue), where it waits for the call stack to be empty.
+- The Event Loop checks if the call stack is empty. Once it is, the callback function is pushed to the call stack, executed, and printed as "This is asynchronous".
+</details>
+<details>
+<summary>What are the Callbacks, Promises, and Async/Await?</summary>
+JavaScript uses `callbacks`, `promises`, and `async/await` to manage asynchronous operations efficiently without blocking the execution of other tasks.
+
+- **Callbacks:** These are functions passed as arguments to other functions that execute once the asynchronous operation is complete. The event loop manages when to call the callback.
+- **Promises:** A promise represents the result of an asynchronous operation. It allows chaining of .then() methods to handle the result once it’s available, providing a more structured and readable way to manage asynchronous code.
+```javascript
+fetch('https://jsonplaceholder.typicode.com/posts')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.log(error));
+````
+
+- **Async/Await:** Async/await is syntactic sugar over promises, making asynchronous code look more like synchronous code. It enables asynchronous code to be written in a more readable and sequential manner without blocking the main thread.
+
+```javascript
+async function fetchData() {
+  try {
+    let response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    let data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+```
+
+</details>
