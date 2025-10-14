@@ -170,3 +170,30 @@ async function fetchData() {
   }
   ```
 </details>
+<details>
+  <summary>What are the closures in javascript?</summary>
+  In JavaScript, a closure is the combination of a function and the lexical environment within which that function was declared. This means that an inner function, even after its outer function has finished executing, still retains access to the outer function's variables and parameters.
+  
+  **Here are the key aspects of closures:**
+- **Lexical Scoping:** JavaScript uses lexical scoping, meaning that the scope of a variable is determined by its position within the source code. An inner function has access to variables declared in its own scope, its outer (enclosing) function's scope, and the global scope.
+- **Remembering the Environment:** When an outer function returns an inner function, the inner function "remembers" the lexical environment in which it was created. This environment includes all the variables and parameters that were in scope at the time of the inner function's creation.
+- **Persistence of Variables:** Even after the outer function has completed its execution and its execution context is removed from the call stack, the variables it declared remain accessible to the inner function (the closure) as long as a reference to that inner function exists. This allows the inner function to continue to access and manipulate those variables.
+
+  ```Javascript
+    function createCounter() {
+    let count = 0; // 'count' is a variable in the outer scope
+  
+    function increment() { // 'increment' is the inner function (the closure)
+      count++;
+      console.log(count);
+    }
+  
+    return increment; // Return the inner function
+  }
+  
+  const myCounter = createCounter(); // 'createCounter' finishes executing, but 'count' persists
+  myCounter(); // Output: 1
+  myCounter(); // Output: 2
+  ```
+  In this example, `increment` is a closure. Even after `createCounter()` has returned, `myCounter` (which is a reference to `increment`) can still access and modify the count variable from `createCounter`'s scope. This demonstrates how closures allow for data encapsulation and maintaining state across function calls.
+</details>
