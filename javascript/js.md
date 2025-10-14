@@ -83,3 +83,49 @@ async function fetchData() {
 ```
 
 </details>
+<details>
+  <summary>What is debouncing in Javascript?</summary>
+
+  This might not be asked directly like this, but may be in the form of `How you can avoid multiple calls with type ahead search?`. 
+    Debouncing in JavaScript is a technique used to control the rate at which a function is executed, particularly when it's tied to events that can fire rapidly,    such as user input (typing, clicking), window resizing, or scrolling. The core idea is to delay the execution of a function until a certain amount of time has      passed since its last invocation. If the event triggers again within that delay period, the timer is reset, effectively preventing the function from being called   until a period of inactivity.
+  How it works:
+  - **Timer Management:** A setTimeout is used to schedule the function execution after a specified delay.
+  - **Resetting the Timer:** Each time the debounced function is called (i.e., the event fires), any previously set setTimeout is cleared using clearTimeout, and a new timer is initiated.
+  - **Execution on Inactivity:** The function is only actually executed if the specified delay elapses without any further invocations of the debounced function.
+
+  ```javascript
+  function debounce(func, delay) {
+    let timeoutId; // This will store the ID of the timeout
+  
+    return function(...args) {
+      // Clear any existing timeout to reset the timer
+      clearTimeout(timeoutId);
+  
+      // Set a new timeout
+      timeoutId = setTimeout(() => {
+        // Execute the original function after the delay
+        func.apply(this, args);
+      }, delay);
+    };
+  }
+  
+  // Example usage:
+  function handleSearchInput(query) {
+    console.log("Searching for:", query);
+    // In a real application, this might trigger an API call
+  }
+  
+  const debouncedSearch = debounce(handleSearchInput, 500); // Debounce with a 500ms delay
+  
+  // Attach to an input field's 'input' event
+  document.getElementById('myInput').addEventListener('input', (event) => {
+    debouncedSearch(event.target.value);
+  });
+```
+
+**Why use debouncing?**
+- **Performance Optimization:** Prevents excessive function calls, especially for resource-intensive operations like API requests or DOM manipulations, improving application responsiveness.
+- **Preventing Unwanted Behavior:** Ensures actions are taken only when a user has "finished" an interaction (e.g., stops typing before a search is performed).
+- **Resource Management:** Reduces unnecessary processing and network requests, leading to more efficient use of system resources.
+
+</details>
