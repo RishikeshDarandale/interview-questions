@@ -1,5 +1,93 @@
 # Questions
 
+## Fundamentals
+<details>
+  <summary>Data types (primitive vs. reference, null vs. undefined)</summary>
+  JavaScript data types are categorized into two main groups: primitive and reference types.
+  
+  - **Primitive Data Types:** Primitive types represent single, immutable values. When a primitive value is assigned to a variable, the variable directly holds that value. The primitive data types in JavaScript are:
+    - **String:** Represents textual data (e.g., `"hello"`).
+    - **Number:** Represents both integer and floating-point numbers (e.g., `10`, `3.14`).
+    - **Boolean:** Represents a logical entity, either `true` or `false`.
+    - **Undefined:** Represents a variable that has been declared but has not yet been assigned a value. 
+    - **Null:** Represents the intentional absence of any object value. It is a primitive value, despite `typeof null` returning `"object"`.
+    - **Symbol:** A unique and immutable value, often used as object property keys.
+    - **BigInt:** Represents arbitrarily large integers.
+  - **Reference Data Types:** Reference types, also known as objects, are mutable and can hold collections of data and more complex entities. When a reference value is assigned to a variable, the variable holds a reference (memory address) to the object, not the object itself. The primary reference data types in JavaScript are:
+    - **Object:** A collection of key-value pairs.
+    - **Array:** An ordered list of values.
+    - **Function:** A block of code designed to perform a particular task.
+
+  **Null vs. Undefined:**
+  - **Undefined:**
+    - Indicates that a variable has been declared but no value has been assigned to it.
+    - It is a primitive data type.
+    - Example:
+  ```javascript
+        let myVariable;
+        console.log(myVariable); // Output: undefined
+  ```
+ - **Null:**
+   - Represents the intentional absence of any object value. It is a value explicitly assigned by a developer to signify "no value" or "no object."
+   - It is a primitive data type, despite typeof null returning "object".
+   - Example:
+  ```javascript
+        let myObject = null;
+        console.log(myObject); // Output: null
+  ```
+  - Key Differences:
+    - `undefined` typically signifies an uninitialized state, while `null` signifies a deliberate absence of value.
+    - `null` is a value that must be explicitly assigned, whereas `undefined` is often the default value for uninitialized variables.
+    - `null == undefined` evaluates to `true` (due to type coercion), but `null === undefined` evaluates to `false` (strict equality checks both value and type).
+</details>
+<details>
+  <summary>Variables (var, let, const) and scoping</summary>
+</details>
+<details>
+  <summary>Operators (== vs. ===)</summary>
+</details>
+<details>
+  <summary>Hoisting</summary>
+</details>
+<details>
+  <summary>Functions (declarations, expressions, arrow functions)</summary>
+</details>
+<details>
+  <summary>this keyword</summary>
+</details>
+
+<details>
+  <summary>What are the closures in javascript?</summary>
+  In JavaScript, a closure is the combination of a function and the lexical environment within which that function was declared. This means that an inner function, even after its outer function has finished executing, still retains access to the outer function's variables and parameters.
+  
+  **Here are the key aspects of closures:**
+- **Lexical Scoping:** JavaScript uses lexical scoping, meaning that the scope of a variable is determined by its position within the source code. An inner function has access to variables declared in its own scope, its outer (enclosing) function's scope, and the global scope.
+- **Remembering the Environment:** When an outer function returns an inner function, the inner function "remembers" the lexical environment in which it was created. This environment includes all the variables and parameters that were in scope at the time of the inner function's creation.
+- **Persistence of Variables:** Even after the outer function has completed its execution and its execution context is removed from the call stack, the variables it declared remain accessible to the inner function (the closure) as long as a reference to that inner function exists. This allows the inner function to continue to access and manipulate those variables.
+
+  ```Javascript
+    function createCounter() {
+    let count = 0; // 'count' is a variable in the outer scope
+  
+    function increment() { // 'increment' is the inner function (the closure)
+      count++;
+      console.log(count);
+    }
+  
+    return increment; // Return the inner function
+  }
+  
+  const myCounter = createCounter(); // 'createCounter' finishes executing, but 'count' persists
+  myCounter(); // Output: 1
+  myCounter(); // Output: 2
+  ```
+  In this example, `increment` is a closure. Even after `createCounter()` has returned, `myCounter` (which is a reference to `increment`) can still access and modify the count variable from `createCounter`'s scope. This demonstrates how closures allow for data encapsulation and maintaining state across function calls.
+</details>
+
+<details>
+  <summary>Prototypes and prototypal inheritance</summary>
+</details>
+
 <details>
   <summary>Why javascript is single threaded?</summary>
    JavaScript is designed as a single-threaded language primarily for simplicity and to avoid the complexities associated with multithreading in a browser environment.
@@ -15,74 +103,7 @@ While JavaScript is single-threaded in its core execution model, modern JavaScri
 
 </details>
 
-<details>
-  <summary>How single-threaded JavaScript handles multiple tasks?</summary>
-  Despite its single-threaded nature, JavaScript is not inefficient. It achieves high-performance concurrency for non-blocking tasks, like fetching data from an API or responding to a user click, through a sophisticated system that includes the event loop, callback queues, and Web APIs.
-  
-  Here is a step-by-step breakdown of how this process works:
-  - **The Call Stack**: All synchronous code is executed here, one function at a time in a Last-In, First-Out (LIFO) order. When a function finishes, it is "popped" off the stack.
-  - **Offloading to Web APIs**: When the JavaScript engine encounters an asynchronous operation—such as setTimeout(), fetch(), or a DOM event listener—it does not wait for it to complete. Instead, it offloads the operation to a Web API (or C++ API in Node.js) to run in the background.
-  - **The Callback Queue**: Once the Web API finishes its task, it places the callback function (the code to be run next) into a queue. There are separate queues for different types of tasks, including higher-priority "microtasks" (like Promises) and lower-priority "macrotasks" (like timers).
-  - **The Event Loop**: This constantly-running process checks if the call stack is empty. If it is, the event loop takes the first item from the queue and pushes it onto the call stack for execution. 
-  
-  This mechanism ensures that computationally intensive background tasks do not block the main thread, keeping the application responsive.
-  
-  e.g.
-  ```javascript
-  console.log("Start");
 
-setTimeout(() => {
-console.log("This is asynchronous.");
-}, 2000);
-
-console.log("End");
-
-```
-**Output:**
-```
-
-Start
-End
-This is asynchronous.
-
-````
-
-**In this example:**
-
-- The first console.log("Start") is executed and removed from the stack.
-- The setTimeout() function is encountered and placed in the call stack. It sets the callback function to await in the Web API (which handles the asynchronous operation), then the setTimeout() function is popped off the stack.
-- The third console.log("End") is pushed onto the stack and executed, and then it's popped off.
-- After 2 seconds, the callback function passed to setTimeout() is moved to the Callback Queue (or Event Queue), where it waits for the call stack to be empty.
-- The Event Loop checks if the call stack is empty. Once it is, the callback function is pushed to the call stack, executed, and printed as "This is asynchronous".
-</details>
-<details>
-<summary>What are the Callbacks, Promises, and Async/Await?</summary>
-JavaScript uses `callbacks`, `promises`, and `async/await` to manage asynchronous operations efficiently without blocking the execution of other tasks.
-
-- **Callbacks:** These are functions passed as arguments to other functions that execute once the asynchronous operation is complete. The event loop manages when to call the callback.
-- **Promises:** A promise represents the result of an asynchronous operation. It allows chaining of .then() methods to handle the result once it’s available, providing a more structured and readable way to manage asynchronous code.
-```javascript
-fetch('https://jsonplaceholder.typicode.com/posts')
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.log(error));
-````
-
-- **Async/Await:** Async/await is syntactic sugar over promises, making asynchronous code look more like synchronous code. It enables asynchronous code to be written in a more readable and sequential manner without blocking the main thread.
-
-```javascript
-async function fetchData() {
-  try {
-    let response = await fetch("https://jsonplaceholder.typicode.com/posts");
-    let data = await response.json();
-    console.log(data);
-  } catch (error) {
-    console.log(error);
-  }
-}
-```
-
-</details>
 <details>
   <summary>What is debouncing in Javascript?</summary>
 
@@ -170,30 +191,145 @@ async function fetchData() {
   }
   ```
 </details>
-<details>
-  <summary>What are the closures in javascript?</summary>
-  In JavaScript, a closure is the combination of a function and the lexical environment within which that function was declared. This means that an inner function, even after its outer function has finished executing, still retains access to the outer function's variables and parameters.
-  
-  **Here are the key aspects of closures:**
-- **Lexical Scoping:** JavaScript uses lexical scoping, meaning that the scope of a variable is determined by its position within the source code. An inner function has access to variables declared in its own scope, its outer (enclosing) function's scope, and the global scope.
-- **Remembering the Environment:** When an outer function returns an inner function, the inner function "remembers" the lexical environment in which it was created. This environment includes all the variables and parameters that were in scope at the time of the inner function's creation.
-- **Persistence of Variables:** Even after the outer function has completed its execution and its execution context is removed from the call stack, the variables it declared remain accessible to the inner function (the closure) as long as a reference to that inner function exists. This allows the inner function to continue to access and manipulate those variables.
 
-  ```Javascript
-    function createCounter() {
-    let count = 0; // 'count' is a variable in the outer scope
+
+## Asynchronous JavaScript:
+
+<details>
+  <summary>How single-threaded JavaScript handles multiple tasks?</summary>
+  Despite its single-threaded nature, JavaScript is not inefficient. It achieves high-performance concurrency for non-blocking tasks, like fetching data from an API or responding to a user click, through a sophisticated system that includes the event loop, callback queues, and Web APIs.
   
-    function increment() { // 'increment' is the inner function (the closure)
-      count++;
-      console.log(count);
-    }
+  Here is a step-by-step breakdown of how this process works:
+  - **The Call Stack**: All synchronous code is executed here, one function at a time in a Last-In, First-Out (LIFO) order. When a function finishes, it is "popped" off the stack.
+  - **Offloading to Web APIs**: When the JavaScript engine encounters an asynchronous operation—such as setTimeout(), fetch(), or a DOM event listener—it does not wait for it to complete. Instead, it offloads the operation to a Web API (or C++ API in Node.js) to run in the background.
+  - **The Callback Queue**: Once the Web API finishes its task, it places the callback function (the code to be run next) into a queue. There are separate queues for different types of tasks, including higher-priority "microtasks" (like Promises) and lower-priority "macrotasks" (like timers).
+  - **The Event Loop**: This constantly-running process checks if the call stack is empty. If it is, the event loop takes the first item from the queue and pushes it onto the call stack for execution. 
   
-    return increment; // Return the inner function
-  }
+  This mechanism ensures that computationally intensive background tasks do not block the main thread, keeping the application responsive.
   
-  const myCounter = createCounter(); // 'createCounter' finishes executing, but 'count' persists
-  myCounter(); // Output: 1
-  myCounter(); // Output: 2
-  ```
-  In this example, `increment` is a closure. Even after `createCounter()` has returned, `myCounter` (which is a reference to `increment`) can still access and modify the count variable from `createCounter`'s scope. This demonstrates how closures allow for data encapsulation and maintaining state across function calls.
+  e.g.
+  ```javascript
+  console.log("Start");
+
+setTimeout(() => {
+console.log("This is asynchronous.");
+}, 2000);
+
+console.log("End");
+
+```
+**Output:**
+```
+
+Start
+End
+This is asynchronous.
+
+````
+
+**In this example:**
+
+- The first console.log("Start") is executed and removed from the stack.
+- The setTimeout() function is encountered and placed in the call stack. It sets the callback function to await in the Web API (which handles the asynchronous operation), then the setTimeout() function is popped off the stack.
+- The third console.log("End") is pushed onto the stack and executed, and then it's popped off.
+- After 2 seconds, the callback function passed to setTimeout() is moved to the Callback Queue (or Event Queue), where it waits for the call stack to be empty.
+- The Event Loop checks if the call stack is empty. Once it is, the callback function is pushed to the call stack, executed, and printed as "This is asynchronous".
 </details>
+<details>
+<summary>What are the Callbacks, Promises, and Async/Await?</summary>
+JavaScript uses `callbacks`, `promises`, and `async/await` to manage asynchronous operations efficiently without blocking the execution of other tasks.
+
+- **Callbacks:** These are functions passed as arguments to other functions that execute once the asynchronous operation is complete. The event loop manages when to call the callback.
+- **Promises:** A promise represents the result of an asynchronous operation. It allows chaining of .then() methods to handle the result once it’s available, providing a more structured and readable way to manage asynchronous code.
+```javascript
+fetch('https://jsonplaceholder.typicode.com/posts')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.log(error));
+````
+
+- **Async/Await:** Async/await is syntactic sugar over promises, making asynchronous code look more like synchronous code. It enables asynchronous code to be written in a more readable and sequential manner without blocking the main thread.
+
+```javascript
+async function fetchData() {
+  try {
+    let response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    let data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+```
+
+</details>
+<details>
+  <summary>Event Loop</summary>
+</details>
+<details>
+  <summary>Error handling in asynchronous code</summary>
+</details>
+
+## DOM Manipulation and Events:
+
+<details>
+  <summary>Selecting and modifying DOM elements</summary>
+</details>
+<details>
+  <summary>Event handling (event bubbling, event capturing, event delegation)</summary>
+</details>
+<details>
+  <summary>AJAX and fetch API</summary>
+</details>
+
+## Modern JavaScript (ES6+):
+
+<details>
+  <summary>Arrow functions</summary>
+</details>
+<details>
+  <summary>Destructuring (array and object)</summary>
+</details>
+<details>
+  <summary>Spread and Rest operators</summary>
+</details>
+<details>
+  <summary>Classes</summary>
+</details>
+<details>
+  <summary>Modules (CommonJS vs. ES Modules)</summary>
+</details>
+
+## Problem Solving and Algorithms:
+
+<details>
+  <summary>String manipulation (reversing, palindromes)</summary>
+</details>
+<details>
+  <summary>Array manipulation (removing duplicates, sorting, flattening)</summary>
+</details>
+<details>
+  <summary>Basic algorithms (factorial, Fibonacci, prime numbers)</summary>
+</details>
+<details>
+  <summary>Implementing common data structures (stacks, queues)</summary>
+</details>
+    
+## Advanced Concepts:
+
+<details>
+  <summary>Memoization</summary>
+</details>
+<details>
+  <summary>Currying</summary>
+</details>
+<details>
+  <summary>Higher-order functions</summary>
+</details>
+<details>
+  <summary>Functional programming concepts</summary>
+</details>
+<details>
+  <summary>Generators and Iterators</summary>
+</details>
+
