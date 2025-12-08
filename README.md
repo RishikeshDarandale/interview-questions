@@ -7,6 +7,14 @@ This repository contains some common questions asked in interviews and their ans
 - [Javascript](./javascript/js.md)
 - [React.js](./javascript/react.md)
 
+## DevOps
+
+- [Docker](./devops/docker.md)
+
+## Architecture
+
+- [Micro Services](./architecture/microservices.md)
+
 ## Credits
 
 - [Google Gemini](https://gemini.google.com/)
