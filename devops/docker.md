@@ -22,6 +22,7 @@ The key components of the Docker platform are:
 The fundamental difference between Docker containers and traditional Virtual Machines (VMs) lies in the presence of the Guest Operating System (OS) and the way they share the host resources.
 
 |Feature	| Docker Containers	| Traditional Virtual Machines (VMs)|
+|---------|-------------------|-----------------------------------|
 |Isolation Level	| Process-level isolation.	| Hardware-level emulation/isolation.|
 |Operating System	| Shares the host OS kernel.	| Requires a full Guest OS (e.g., Windows, Linux) for every VM.|
 |Resource Overhead |	Very low (Only application code and shared libraries are needed). |	High (Requires resources for the Guest OS, like CPU, memory, and disk).|
